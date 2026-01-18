@@ -1,0 +1,127 @@
+# Gems Project Setup Guide
+
+This guide explains how to install dependencies and run the Gems project on your system.
+
+## Prerequisites
+
+Before starting, make sure you have the following installed:
+- Node.js (v18 or higher)
+- Bun package manager (recommended) or npm/yarn
+- Git
+
+## Installation Steps
+
+### 1. Clone the Repository
+```bash
+git clone <repository-url>
+cd gems
+```
+
+### 2. Install Dependencies
+Using Bun (recommended):
+```bash
+bun install
+```
+
+Alternative using npm:
+```bash
+npm install
+```
+
+### 3. Configure Environment Variables
+Create a `.env` file in the root directory with the following content:
+```
+DATABASE_URL="file:./db/custom.db"
+```
+
+### 4. Set Up the Database
+Generate the Prisma client:
+```bash
+bun run db:generate
+```
+
+Push the database schema:
+```bash
+bun run db:push
+```
+
+### 5. Run the Development Server
+Start the development server:
+```bash
+bun run dev
+```
+
+If using npm instead of bun:
+```bash
+npm run dev
+```
+
+### 6. Access the Application
+Open your browser and go to:
+- Local: http://localhost:3000
+- Network: http://192.168.1.19:3000 (or your local IP)
+
+## Troubleshooting
+
+### Common Issues and Solutions:
+
+1. **Port Already in Use Error**
+   - If you get "address already in use :::3000", kill the process using port 3000:
+   - Windows: `netstat -ano | findstr :3000` then `taskkill /PID <PID> /F`
+   - macOS/Linux: `lsof -i :3000` then `kill -9 <PID>`
+
+2. **Database Connection Error**
+   - Ensure the `.env` file is properly configured with the correct database path
+   - Make sure the `db/custom.db` file exists in your project directory
+
+3. **Prisma Engine Permission Error (Windows)**
+   - If you encounter permission errors with Prisma query engine, try running the command prompt as administrator
+
+4. **Params Await Error in Next.js**
+   - This occurs in Next.js 15 when using dynamic routes
+   - Ensure your API routes properly await the params object:
+   ```typescript
+   export async function GET(
+     request: NextRequest,
+     { params }: { params: Promise<{ cert: string }> }
+   ) {
+     const { cert: certificateNumber } = await params
+   }
+   ```
+
+## Additional Scripts
+
+The project includes several useful scripts:
+
+- `bun run build` - Build the application for production
+- `bun start` - Start the production server
+- `bun run lint` - Run ESLint to check for code issues
+- `bun run db:seed` - Seed the database with initial data
+
+## Project Structure
+
+- `src/` - Main source code
+- `src/app/` - Next.js App Router pages
+- `src/components/` - Reusable React components
+- `src/lib/` - Utility functions and configurations
+- `prisma/` - Database schema and migration files
+- `db/` - SQLite database file
+- `skills/` - AI skill modules for various functionalities
+
+## Admin Registration
+
+To register the first admin:
+1. Navigate to the admin registration page
+2. Enter your details (name, email, password)
+3. Submit the form to create the admin account
+
+The system allows only one admin registration initially for security purposes.
+
+## Database
+
+The project uses SQLite with Prisma ORM:
+- Database file: `db/custom.db`
+- Schema definition: `prisma/schema.prisma`
+- Models: User, GemCertification, Admin
+
+Enjoy using the Gems application!
